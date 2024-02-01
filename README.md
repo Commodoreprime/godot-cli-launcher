@@ -20,7 +20,7 @@ Mono runtime enabled versions can be called for by supplying `mono` as an comman
 ```sh
 $ godot.py mono
 
-$ godot3 mono
+$ godot3-mono
 ```
 
 ### Extra aguments
