@@ -96,7 +96,8 @@ script_name = os.path.basename(argv[0])[5:]
 if len(script_name) != 0 or script_name != ".py":
     target_godot.update(gather_version(script_name.split('-'), get_startidx=False))
 
-target_godot.update(gather_version(argv[1:], get_startidx=True))
+if len(argv[1:]) > 0:
+    target_godot.update(gather_version(argv[1:], get_startidx=True))
 
 highest_match_idxs = reverse_search_value_dict(godots_index, "version", target_godot["version"])
 

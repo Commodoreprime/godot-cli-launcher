@@ -8,7 +8,9 @@ The script exepects either arguments to be passed in, or the script to be given 
 
 The script (when not given any version number, release version or whether it is mono or not) will attempt to run the latest, stable, non mono version it can find.
 
-For example in order to run the latest stable version of Godot (`4.2` as of writing), do:
+### Examples
+
+In order to explicitly run the latest stable version of Godot (`4.2` as of writing), do:
 ```sh
 $ godot.py 4
 #... or when specified as a file name
