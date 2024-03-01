@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from os import environ as env
-# from pprint import pprint
 from pathlib import Path
 from sys import argv
 import os
@@ -26,6 +25,7 @@ def godot_bin_indexer(bin_search_path: str|Path) -> list:
         
         bin_basename = os.path.basename(file_path)
         
+        # TODO: Probably best to eliminate the RegEx, if possible
         godot_version = re.findall(r'v[0-9].+-', bin_basename)[0][1:-1]
         godot_release_class = re.findall(r'-\w+_', bin_basename)[0][1:-1]
         godot_is_mono = godot_release_class.count("mono") >= 1
@@ -39,8 +39,6 @@ def godot_bin_indexer(bin_search_path: str|Path) -> list:
     return return_list
 
 godots_index: list = sorted(godot_bin_indexer(GODOT_BINS_DIRECTORY), key=lambda k: k["version"])
-
-# pprint(godots_index, indent=2)
 
 def reverse_search_value_dict(source_list: list, target_key: str, target_value: str) -> list:
     """ Iterate over a list of dicts and given a key and value, return list of index positions that point to matching dict items.
@@ -101,15 +99,23 @@ if len(argv[1:]) > 0:
 
 highest_match_idxs = reverse_search_value_dict(godots_index, "version", target_godot["version"])
 
-print(f'{target_godot["argv_startidx"]} "{argv[target_godot["argv_startidx"]:]}", {target_godot["version"]}, {target_godot["release_class"]}, is mono = {target_godot["using_mono"]}')
+godot_launch_args = argv[target_godot["argv_startidx"]:]
+
+print(f'Launching Godot {target_godot["version"]} {target_godot["release_class"]}', end='')
+if target_godot["using_mono"] == True:
+    print(f" with mono", end='')
+if len(godot_launch_args) > 0:
+    print(f". With the following args: {' '.join(godot_launch_args)}", end='')
+print("")
 
 for idx in highest_match_idxs:
     item = godots_index[idx]
     if item["release_class"] == target_godot["release_class"] and \
        item["is_mono"] == target_godot["using_mono"]:
             exec_path = item["bin_path"]
-            os.execvp(exec_path, [exec_path, *argv[target_godot["argv_startidx"]:]])
-    # print(f'({idx}): {item}')
+            executable_args = [exec_path]
+            executable_args.extend(godot_launch_args)
+            os.execvp(exec_path, executable_args)
 
 print(f"Was unable to locate the Godot binary in {GODOT_BINS_DIRECTORY}")
 
