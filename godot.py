@@ -69,6 +69,8 @@ def gather_version(parsing_list: list, get_startidx: bool = False) -> dict:
         elif (arg.count("stable") + arg.count("rc") + arg.count("beta") + arg.count("alpha")) == 1 and release_class_found == False:
             return_object.update({"release_class": arg})
             release_class_found = True
+        elif arg == "--list" or arg == "-l":
+            return { "list_bins": True }
         else:
             break
     
@@ -87,7 +89,8 @@ target_godot: dict = {
     "version": godots_index[len(godots_index) - 1]["version"], # i.e. 4.2
     "release_class": "stable",
     "using_mono": False,
-    "argv_startidx": -1
+    "argv_startidx": -1,
+    "list_bins": False
 }
 
 script_name = os.path.basename(argv[0])[5:]
@@ -96,6 +99,14 @@ if len(script_name) != 0 or script_name != ".py":
 
 if len(argv[1:]) > 0:
     target_godot.update(gather_version(argv[1:], get_startidx=True))
+
+if target_godot["list_bins"] == True:
+    for gd_entry in godots_index:
+        print(f'{gd_entry["version"]} {gd_entry["release_class"]}', end='')
+        if gd_entry["is_mono"] == True:
+            print(" mono", end='')
+        print("")
+    exit(0)
 
 highest_match_idxs = reverse_search_value_dict(godots_index, "version", target_godot["version"])
 

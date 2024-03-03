@@ -8,6 +8,15 @@ The script exepects either arguments to be passed in, or the script to be given 
 
 The script (when not given any version number, release version or whether it is mono or not) will attempt to run the latest, stable, non mono version it can find.
 
+### Additional arguments
+There are a few arguments that have special meaning to the script:
+
+| Argument      | Description
+| :------------ | :--------- |
+| `--list`/`-l` | Output Godot versions found by the script then exits
+
+These arguments are consumed by the script and are not carried over to the executable.
+
 ### Examples
 
 In order to explicitly run the latest stable version of Godot (`4.2` as of writing), do:
@@ -38,7 +47,7 @@ $ godot.py 4.5.1 rc4 mono --help
 ```
 
 ### Ordering and priority
-The order of the arguments do not matter, just as long as they occur before any unrecongized arguments are passed (i.e. `--editor`).
+The order of the arguments do not matter, just as long as they occur before any unrecongized script arguments are passed (i.e. `--editor`) (See [Additional arguments](#additional-arguments) for arguments recognized by the script).
 
 Additionally, the first occurance of a recgonized keyword (such as release version) will take precdence over any that come after.
 
